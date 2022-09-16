@@ -41,15 +41,51 @@ func BenchmarkOneFieldWithDefaultFields(b *testing.B) {
 	})
 }
 
-func BenchmarkThreeFields(b *testing.B) {
+func BenchmarkThreeFields1(tB *testing.B) {
 	logger := logf.New(logf.Opts{Writer: io.Discard})
-	b.ReportAllocs()
-	b.ResetTimer()
 
-	b.RunParallel(func(p *testing.PB) {
+	var (
+		a string = "valuea"
+		b string = "valueb"
+		c string = "valuec"
+		d string = "valued"
+		e string = "valuee"
+		f string = "valuef"
+		g string = "valueg"
+	)
+
+	tB.ReportAllocs()
+	tB.ResetTimer()
+	tB.RunParallel(func(p *testing.PB) {
 		for p.Next() {
 			logger.Info("request completed",
-				"component", "api", "method", "GET", "bytes", 1<<18,
+				"a", a,
+				"b", b,
+				"c", c,
+				"d", d,
+				"e", e,
+				"f", f,
+				"g", g,
+			)
+		}
+	})
+}
+
+func BenchmarkThreeFields(tB *testing.B) {
+	logger := logf.New(logf.Opts{Writer: io.Discard})
+
+	const (
+		a = "api"
+		b = "method"
+		c = 1 << 18
+	)
+
+	tB.ReportAllocs()
+	tB.ResetTimer()
+	tB.RunParallel(func(p *testing.PB) {
+		for p.Next() {
+			logger.Info("request completed",
+				"component", a, "method", b, "bytes", c,
 			)
 		}
 	})
